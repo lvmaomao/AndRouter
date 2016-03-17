@@ -1,4 +1,4 @@
-package cn.campusapp.router;
+package cn.campusapp.router.router;
 
 import android.app.Activity;
 
@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by kris on 16/3/10.
  */
-public interface IRouterTableInitializer {
+public interface IActivityRouteTableInitializer {
     /**
      * init the router table
      * @param router the router map to

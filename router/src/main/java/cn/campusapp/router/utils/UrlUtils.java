@@ -1,12 +1,11 @@
 package cn.campusapp.router.utils;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -16,12 +15,15 @@ import timber.log.Timber;
 public class UrlUtils {
 
     private static final String TAG = "UrlUtils";
-    private static final String TEMP_URL = "http://sixwolf.net/"; //because the route path don't have the host, it's can't be parse, so i give my blog address as the host
 
-    public static List<String> getPathSegments(String path){
+    /**
+     * get the path segments
+     * @param url
+     * @return
+     */
+    public static List<String> getPathSegments(String url){
         try {
-            String urlStr = TEMP_URL + cleanPath(path);
-            return Uri.parse(urlStr).getPathSegments();
+            return Uri.parse(url).getPathSegments();
         } catch (Exception e){
             Timber.e(e, "url parse fail");
         }
@@ -29,30 +31,64 @@ public class UrlUtils {
     }
 
     /**
-     * delete the “/” int the begin of the path
-     * @param path
+     * get the scheme of the url
+     * @param url
      * @return
      */
-    private static String cleanPath(String path){
-        if(!TextUtils.isEmpty(path) && path.startsWith("/")){
-            return path.substring(1, path.length());
-        } else {
-            return path;
+    public static String getScheme(String url){
+        try{
+            return Uri.parse(url).getScheme();
+        } catch (Exception e){
+            Timber.e(e, "url parse fail");
         }
+        return null;
     }
 
 
-    public static Map<String, String> getOptionParams(String path){
-        Map<String, String> map = new HashMap<>();
+    /**
+     * get the protocol of the url
+     */
+    public static int getPort(String url){
         try{
-            String urlStr = TEMP_URL + cleanPath(path);
-            Uri uri = Uri.parse(urlStr);
-            for(String key : uri.getQueryParameterNames()){
-                map.put(key, uri.getQueryParameter(key));
-            }
-        } catch (Exception e) {
-            Timber.e(e, "get the param of the url fail");
+            return Uri.parse(url).getPort();
+        } catch (Exception e){
+            Timber.e(e, "url parse fail");
         }
-        return map;
+        return -1;
+    }
+
+    public static String getHost(String url){
+        try{
+            return Uri.parse(url).getHost();
+        } catch (Exception e){
+            Timber.e(e, "url parse fail");
+        }
+        return null;
+    }
+
+    public static HashMap<String, String> getParameters(String url){
+        HashMap<String, String> parameters = new HashMap<>();
+        try{
+            Uri uri = Uri.parse(url);
+            Set<String> keys = uri.getQueryParameterNames();
+
+            for(String key : keys){
+                parameters.put(key, uri.getQueryParameter(key));
+            }
+        } catch (Exception e){
+            Timber.e(e, "");
+        }
+        return parameters;
+    }
+
+
+    public static String addQueryParameters(String url, String key, String value){
+        try{
+            Uri uri = Uri.parse(url);
+            return uri.buildUpon().appendQueryParameter(key, value).build().toString();
+        } catch (Exception e){
+            Timber.e(e, "");
+        }
+        return url;
     }
 }

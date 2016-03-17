@@ -9,6 +9,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import cn.campusapp.androuter.DebugActivity;
+import cn.campusapp.router.route.ActivityRoute;
+import cn.campusapp.router.router.ActivityRouter;
+import cn.campusapp.router.router.IRouter;
 
 /**
  * Created by kris on 16/3/11.
@@ -20,7 +23,7 @@ public class RouteTest {
 
     @Test
     public void testRouteBuilder(){
-        String path = "/happy/hello?pp=23";
+        String path = "activity://www.baidu.com/happy/hello?pp=23";
         long longvalue = 12312312312313l;
         char charvalue = 'c';
         CharSequence charSequence = "charsequence";
@@ -30,8 +33,9 @@ public class RouteTest {
         int intValue = 1223;
 
         DebugActivity debugActivity = rule.getActivity();
-        Route route = new Route.Builder()
-                .setPath(path)
+        IRouter router = new ActivityRouter();
+        ActivityRoute route = new ActivityRoute.Builder(router)
+                .setUrl(path)
                 .withParams("longvalue", longvalue)
                 .withParams("charvalue", charvalue)
                 .withParams("charsequence", charSequence)

@@ -20,21 +20,26 @@ public class UrlUtilTest extends BaseUnitTest {
     @Test
     public void testGetPathSegments(){
         List<String> segs = null;
-        segs = UrlUtils.getPathSegments("/happy/picasso/:c{id}/:{key}");
+        segs = UrlUtils.getPathSegments("activity://popo.com/happy/picasso/:c{id}/:{key}");
         Assert.assertEquals(segs.size(), 4);
 
 
-        segs = UrlUtils.getPathSegments("/happy/picasso/12312332232312/f");
+        segs = UrlUtils.getPathSegments("http://www.baidu.com/happy/picasso/12312332232312/f");
         Assert.assertEquals(segs.size(), 4);
     }
 
 
+    @Test
+    public void testGetHost(){
+        String host = UrlUtils.getScheme("cn.campusapp://www.baidu.com/picasso/ffff");
+        Assert.assertEquals(host, "cn.campusapp");
+    }
 
 
     @Test
     public void testGetOptionParams(){
         Map<String, String> ret = null;
-        ret = UrlUtils.getOptionParams("/happy?cc=ffff&w=123&cp=1");
+        ret = UrlUtils.getParameters("http://www.baidu.com/happy?cc=ffff&w=123&cp=1");
         Assert.assertEquals(ret.get("cc"), "ffff");
         Assert.assertEquals(ret.get("w"), "123");
         Assert.assertEquals(ret.get("cp"), "1");

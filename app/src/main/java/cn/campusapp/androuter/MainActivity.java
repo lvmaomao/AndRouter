@@ -6,9 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import cn.campusapp.router.Route;
-import cn.campusapp.router.RoutePathBuilder;
-import cn.campusapp.router.Router;
+import cn.campusapp.router.router.ActivityRouter;
 import cn.campusapp.router.exception.NotAllKeySetException;
 import timber.log.Timber;
 
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                             .setPath(path)
                             .withParams("extra", "It works")
                             .build();
-                    Router.getSharedRouter().open(route);
+                    ActivityRouter.getSharedRouter().open(route);
                 } catch (NotAllKeySetException e) {
                     e.printStackTrace();
                 }
