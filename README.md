@@ -2,17 +2,17 @@
 AndRouter is a android framework used to map url to activities or actions. 
 
 ## Features
-- AndRouter implements activities router, so your only need to define your own activities mapping table and enjoying using url to open activities.
-- AndRouter implements Browser router. So you can use it to open a web url. It will use the system browser to open it.
+- AndRouter implements activities router, so it only need to define the activities mapping table and enjoy using url to open activities.
+- AndRouter implements Browser router. So it can be used to open a web url. It will use the system browser to open it.
 - AndRouter supports adding user-defined router. 
 - RouteManager will use the first router which can open the url in the list to open it. So the router added earlier will have higher priority.
-- The default scheme of activities router is "activity", and broswer router is "http" and "https". You are allowed to change them.
-- You can change the behaviour of the default activity router and browser router.
-- You can only add one object of a router class to the Router. Or it will delete the router object which has the same class of that you added and add the new one.
+- The default scheme of activities router is "activity", and broswer router is "http" and "https". It's allowed to change them.
+- It supports to change the behaviour of the default activity router and browser router.
+- It can only add one object of a router class to the Router. Or it will delete the router object which has the same class of that you added and add the new one.
 
 ## Usage
 ### Initialize
-If you want to use the default activity router and browser router, you should initialize them.   
+It needs to be initialized if you want to use the default activity router and browser router. 
 
 ```java
     Router.initActivityRouter(getApplicationContext(), new IActivityRouteTableInitializer() {
@@ -37,17 +37,16 @@ If you want to use the default activity router and browser router, you should in
 
 ```
 
-As the code above shows, you need to implement the IActivityRouteTableInitializer interface to add the activity router table. As we can see, I add some routes to the default activities router. For example, the route "activity://first/:s{name}/:i{age}/birthday" will map to FirstActivity.class. The route consists with four parts.
+ActivityRouter needs a IActivityRouteTableInitializer implementation to add the activity router table. In the code above, some routes are added. For example, the route "activity://first/:s{name}/:i{age}/birthday" will map to FirstActivity.class. The route consists with four parts.
 
 - Scheme: Normally, define which router to use, the "activity" in the example.
-- Host: Normally, define where to go, the "first" in the example. Only url has the same host, it will match the route.
-- Path: Define key value and path, the "/:s{name}/:i{age}/birthday" in the example. The path segments can be divided to two types. One, the path, such as "birthday", it's fixed. And the value key such as the :s{name}, it defines values in the url. You can replace the ":s{name}" with "kris", and it will be set to the intent extras with putExtra("name", "kris"), so you can get the value of "name" in the routing activity with getExtra("name"). 
-ValueKey format is like the table below showes. ":{}" is essential. And the character after ':' define the type of the value, if the url mathes but the value type not matches, it will throw RuntimeException, which you should pay attention to.
+- Host: Normally, define where to go, the "first" in the example.
+- Path: Define key value and path, the "/:s{name}/:i{age}/birthday" in the example. The path segments can be divided to two types. One, the fixed path, such as "birthday", it's fixed. And the value key such as the :s{name}, it defines values in the path. In url, it will be replaced with value. For example, ":s{name}" can be replaced with "kris", and it will be set to the intent extras with putExtra("name", "kris"), then in the routing activity, the value of "name" can be get with getStringExtra("name"). The table below showes the value key format. ":{}" is essential. And the character after ':' define the type of the value, if the url mathes but the value type not matches, it will throw RuntimeException, which you should pay attention to.
 
 |   key format |  :i{key}  | :f{key} | :l{key}  | :d{key}    |   :s{key} or :{key} | :c{key} |
 |:-------:     |:--------: | :------:| :------: | :--------: |   :-------: | :----:|
 |   type       |   integer |  float  |   long   |   double   |     string | char|
-- Query parameters: you can add some option parameters in the Query parameters. It will also add to the Intent extras. But it will not influence the route match. For example, the url "activity://first/kris/26?wifename=marry" matches to "activity://first/:{name}/:i{age}".
+- Query parameters: It supports adding some option parameters in the Query parameters. But it will not influence the route match. For example, the url "activity://first/kris/26?wifename=marry" matches to "activity://first/:{name}/:i{age}". Then in the FirstActivity, the value of "wifename" can be got.
 
 ### Definition of match
 If a url matches a route, the url's scheme and host are equal to the route. And the pathes except the value key are equal.   
@@ -67,7 +66,6 @@ If the route is "activity://main/:{name}/feed/:i{page}/list".
 - activity://main/kris/12/list            |       path not match
 
 ### Useage of Activity Router
-If you have initialize the Android Router, you can use it to open activity url like the code below.
 
 open with startActivity(), it matches the route as "activity://second/:{name}"
 
@@ -178,7 +176,7 @@ And add it to the RouterManager
 	Router.addRouter(new TestRouter());
 ```
 ## Install
-Users of your library will need add the jitpack.io repository:
+It needs adding the jitpack.io repository:
 
 ```
 allprojects {
