@@ -35,8 +35,17 @@
 
 
     <Button
+        android:id="@+id/btn6"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Put extra value"/>
+
+
+    <Button
         android:id="@+id/btn5"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Open WebView"/>
+
+
 </LinearLayout>

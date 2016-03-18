@@ -28,6 +28,10 @@ public class Router {
     }
 
 
+    public static synchronized void initActivityRouter(Context context, String scheme, IActivityRouteTableInitializer initializer){
+        RouterManager.getSingleton().initActivityRouter(context, initializer, scheme);
+    }
+
     public static void open(String url){
         RouterManager.getSingleton().open(url);
     }

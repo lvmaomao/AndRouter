@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Date;
+
 import cn.campusapp.router.Router;
 import cn.campusapp.router.route.ActivityRoute;
 
@@ -23,6 +25,8 @@ public class MainActivity extends Activity {
 
     Button btn5;
 
+    Button btn6;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,7 @@ public class MainActivity extends Activity {
         btn3 = (Button) findViewById(R.id.btn3);
         btn4 = (Button) findViewById(R.id.btn4);
         btn5 = (Button) findViewById(R.id.btn5);
+        btn6 = (Button) findViewById(R.id.btn6);
 
 
         btn1.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +73,13 @@ public class MainActivity extends Activity {
                 Router.open("http://www.baidu.com");
             }
         });
+
+        btn6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivityWithExtraValue();
+            }
+        });
     }
 
 
@@ -77,22 +89,30 @@ public class MainActivity extends Activity {
 
     private void openSecondActivityWithVerticalAnim(){
         ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://second/汤二狗");
-        activityRoute.setAnimation(this, R.anim.in_from_left, R.anim.out_to_right);
-        activityRoute.open();
+        activityRoute
+                .setAnimation(this, R.anim.in_from_left, R.anim.out_to_right)
+                .open();
     }
 
     private void openSecondActivityWithHorizontalAnim(){
         ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://second/汤二狗");
-        activityRoute.setAnimation(this, R.anim.in_from_top, R.anim.out_to_bottom);
-        activityRoute.open();
+        activityRoute.setAnimation(this, R.anim.in_from_top, R.anim.out_to_bottom)
+                .open();
     }
 
     private void openSecondActivityForResult(){
         ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://second/汤二狗");
-        activityRoute.withOpenMethodStartForResult(this, 200);
-        activityRoute.open();
+        activityRoute.withOpenMethodStartForResult(this, 200)
+                .open();
     }
 
+    private void openSecondActivityWithExtraValue(){
+        Date date = new Date();
+        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://third");
+        activityRoute
+                .withParams("date", date)
+                .open();
+    }
 
 
 

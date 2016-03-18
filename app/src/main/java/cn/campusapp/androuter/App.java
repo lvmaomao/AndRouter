@@ -21,6 +21,7 @@ public class App extends Application {
             @Override
             public void initRouterTable(Map<String, Class<? extends Activity>> router) {
                 router.put("activity://second/:{name}", SecondActivity.class);
+                router.put("activity://third", ThirdActivity.class);
             }
         });
         Router.initBrowserRouter(getApplicationContext());

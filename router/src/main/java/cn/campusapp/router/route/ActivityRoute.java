@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 
 import cn.campusapp.router.router.IRouter;
@@ -35,8 +36,13 @@ public class ActivityRoute extends BaseRoute {
         return mExtras;
     }
 
-    public void setExtras(Bundle extras){
+    private void setExtras(Bundle extras){
         mExtras = extras;
+    }
+
+    public ActivityRoute addExtras(Bundle extras){
+        mExtras.putAll(extras);
+        return this;
     }
 
     public int getInAnimation(){
@@ -77,40 +83,88 @@ public class ActivityRoute extends BaseRoute {
         return mOpenType;
     }
 
-    public void setAnimation(Activity activity, int inAnimation, int outAnimation){
+    public ActivityRoute setAnimation(Activity activity, int inAnimation, int outAnimation){
         mARef = new WeakReference<>(activity);
         mInAnimation = inAnimation;
         mOutAnimation = outAnimation;
+        return this;
     }
 
 
     /**
      * 设置打开页面的方式为startActivity，这也是默认的打开方式
      */
-    public void withOpenMethodStart(Activity activity){
+    public ActivityRoute withOpenMethodStart(Activity activity){
         mOpenType = START;
         mARef = new WeakReference<>(activity);
+        return this;
     }
 
-    public void withOpenMethodStartForResult(Activity activity, int requestCode){
+    public ActivityRoute withOpenMethodStartForResult(Activity activity, int requestCode){
         mRequestCode = requestCode;
         mOpenType = FOR_RESULT_ACTIVITY;
         mARef = new WeakReference<>(activity);
+        return this;
     }
 
-    public void withOpenMethodStartForResult(Fragment fragment, int requestCode){
+    public ActivityRoute withOpenMethodStartForResult(Fragment fragment, int requestCode){
         mRequestCode = requestCode;
         mOpenType = FOR_RESULT_SUPPORT_FRAGMENT;
         mSupportFRef = new WeakReference<Fragment>(fragment);
+        return this;
     }
 
-    public void withOpenMethodStartForResult(android.app.Fragment fragment, int requestCode){
+    public ActivityRoute withOpenMethodStartForResult(android.app.Fragment fragment, int requestCode){
         mRequestCode = requestCode;
         mOpenType = FOR_RESULT_FRAGMENT;
         mFRef = new WeakReference<>(fragment);
+        return this;
     }
 
+    public ActivityRoute withParams(String key, Serializable value){
+        mExtras.putSerializable(key, value);
+        return this;
+    }
 
+    public ActivityRoute withParams(String key, Parcelable value){
+        mExtras.putParcelable(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, int value){
+        mExtras.putInt(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, double value){
+        mExtras.putDouble(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, float value){
+        mExtras.putFloat(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, char value){
+        mExtras.putChar(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, CharSequence value){
+        mExtras.putCharSequence(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, String value){
+        mExtras.putString(key, value);
+        return this;
+    }
+
+    public ActivityRoute withParams(String key, long value){
+        mExtras.putLong(key, value);
+        return this;
+    }
 
 
     public static class Builder{

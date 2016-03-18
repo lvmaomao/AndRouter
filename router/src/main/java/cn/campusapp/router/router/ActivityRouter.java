@@ -226,7 +226,7 @@ public class ActivityRouter extends BaseRouter {
      * @param intent the intent
      * @return the intent
      */
-    private Intent setKeyValueInThePath(String routeUrl, String givenUrl, Intent intent) throws InvalidValueTypeException{
+    private Intent setKeyValueInThePath(String routeUrl, String givenUrl, Intent intent) {
         List<String> routePathSegs = getPathSegments(routeUrl);
         List<String> givenPathSegs = getPathSegments(givenUrl);
         for(int i = 0;i<routePathSegs.size();i++){
@@ -330,7 +330,7 @@ public class ActivityRouter extends BaseRouter {
     }
 
     @Nullable
-    private Intent match(ActivityRoute route) throws InvalidValueTypeException {
+    private Intent match(ActivityRoute route) {
         String matchedRoute = findMatchedRoute(route);
         if(matchedRoute == null){
             return null;
