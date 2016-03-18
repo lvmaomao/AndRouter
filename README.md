@@ -155,7 +155,7 @@ and:
 
 ```
 dependencies {
-    compile 'com.github.campusapp:AndRouter:1.0.0'
+    compile 'com.github.campusappcn:AndRouter:1.0.0'
 }
 ```
 
