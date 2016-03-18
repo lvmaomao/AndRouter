@@ -8,7 +8,7 @@ import cn.campusapp.router.route.IRoute;
 public abstract class BaseRouter implements IRouter{
 
 
-    protected static Class<? extends IRoute> CAN_OPEN_ROUTE;
 
+    protected static Class<? extends IRoute> CAN_OPEN_ROUTE;
 
 }

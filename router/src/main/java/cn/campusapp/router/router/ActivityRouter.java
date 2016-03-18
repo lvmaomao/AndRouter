@@ -32,7 +32,7 @@ import static cn.campusapp.router.utils.UrlUtils.getScheme;
  */
 public class ActivityRouter extends BaseRouter {
     private static final String TAG = "Router";
-    private static final String MATCH_SCHEME = "activity";
+    private static String MATCH_SCHEME = "activity";
     static ActivityRouter mSharedActivityRouter = new ActivityRouter();
     Context mBaseContext;
     Map<String, Class<? extends Activity>> mRouteTable = new HashMap<>();
@@ -74,9 +74,19 @@ public class ActivityRouter extends BaseRouter {
         return CAN_OPEN_ROUTE.equals(route.getClass());
     }
 
+
     @Override
     public boolean canOpenTheUrl(String url) {
         return TextUtils.equals(getScheme(url), MATCH_SCHEME);
+    }
+
+
+    public void setMatchScheme(String scheme){
+        MATCH_SCHEME = scheme;
+    }
+
+    public String getMatchScheme(){
+        return MATCH_SCHEME;
     }
 
     @Override
@@ -121,14 +131,16 @@ public class ActivityRouter extends BaseRouter {
                 Timber.e(new RouteNotFoundException(route.getUrl()), "");
                 return;
             }
-            if(route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null){
-                route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
-            }
+
             if(context == null) {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mBaseContext.startActivity(intent);
             } else {
                 context.startActivity(intent);
+            }
+
+            if(route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null){
+                route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
             }
         } catch (Exception e){
             Timber.e(e, "");
@@ -161,7 +173,7 @@ public class ActivityRouter extends BaseRouter {
         }
     }
 
-    public void openForResult(ActivityRoute route, android.app.Fragment fragment, int requestCode) {
+    protected void openForResult(ActivityRoute route, android.app.Fragment fragment, int requestCode) {
 
         try {
             Intent intent = match(route);
@@ -188,7 +200,9 @@ public class ActivityRouter extends BaseRouter {
         OutLoop:
         for(String routeUrl : mRouteTable.keySet()){
             List<String> routePathSegs = getPathSegments(routeUrl);
-            if(!TextUtils.equals(getHost(routeUrl), route.getHost()))
+            if(!TextUtils.equals(getHost(routeUrl), route.getHost())){
+                continue;
+            }
             if(givenPathSegs.size() != routePathSegs.size()){
                 continue;
             }

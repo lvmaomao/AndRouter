@@ -6,7 +6,6 @@ import cn.campusapp.router.router.IRouter;
  * Created by kris on 16/3/17.
  */
 public class BrowserRoute extends BaseRoute {
-    String mUrl;
 
     public BrowserRoute(IRouter router, String url) {
         super(router, url);
@@ -27,7 +26,7 @@ public class BrowserRoute extends BaseRoute {
             return this;
         }
         
-        public IRoute build(){
+        public BrowserRoute build(){
             return new BrowserRoute(mRouter, mUrl);
         }
 

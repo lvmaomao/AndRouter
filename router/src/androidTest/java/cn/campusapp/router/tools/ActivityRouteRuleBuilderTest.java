@@ -1,4 +1,4 @@
-package cn.campusapp.router;
+package cn.campusapp.router.tools;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -7,13 +7,16 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import cn.campusapp.router.tools.ActivityRouteRuleBuilder;
+import java.util.List;
+
+import cn.campusapp.router.BaseUnitTest;
+import cn.campusapp.router.utils.UrlUtils;
 
 /**
  * Created by kris on 16/3/11.
  */
 @RunWith(AndroidJUnit4.class)
-public class ActivityRouteRuleBuilderTest {
+public class ActivityRouteRuleBuilderTest extends BaseUnitTest{
 
     @Test
     public void testRuleBuilder(){
@@ -26,14 +29,18 @@ public class ActivityRouteRuleBuilderTest {
                 .addKeyValueDefine("d", Double.class)
                 .addKeyValueDefine("s", String.class)
                 .addPathSegment("end").build();
-        Assert.assertEquals(rule, "/main/:i{id}/:l{l}/:f{f}/:d{d}/:s{s}/end");
+        List<String> paths = UrlUtils.getPathSegments(rule);
+        Assert.assertEquals(paths.get(0), ":i{id}");
+        Assert.assertEquals(paths.get(1), ":l{l}");
+        Assert.assertEquals(paths.get(2), ":f{f}");
+        Assert.assertEquals(paths.get(3), ":d{d}");
+        Assert.assertEquals(paths.get(4), ":s{s}");
+        Assert.assertEquals(paths.get(5), "end");
     }
 
     @Test
     public void testIsRouteRuleValid(){
-        Assert.assertFalse(ActivityRouteRuleBuilder.isActivityRuleValid("/:f}/fff"));
         Assert.assertTrue(ActivityRouteRuleBuilder.isActivityRuleValid("http://main/hello/:{f}/:i{id}/l"));
-        Assert.assertFalse(ActivityRouteRuleBuilder.isActivityRuleValid("/fwww/:"));
-        Assert.assertTrue(ActivityRouteRuleBuilder.isActivityRuleValid("activity://www.baidu.com"));
+        Assert.assertFalse(ActivityRouteRuleBuilder.isActivityRuleValid("http://main/hello/:fffw}"));
     }
 }

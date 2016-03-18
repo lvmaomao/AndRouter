@@ -35,6 +35,10 @@ public class ActivityRoute extends BaseRoute {
         return mExtras;
     }
 
+    public void setExtras(Bundle extras){
+        mExtras = extras;
+    }
+
     public int getInAnimation(){
         return mInAnimation;
     }
@@ -115,11 +119,11 @@ public class ActivityRoute extends BaseRoute {
         Bundle mBundle;
         int mInAnimation;
         int mOutAnimation;
-        WeakReference<Activity> mARef;
+        Activity mAct;
         private int mOpenType = 0;
-        private WeakReference<Fragment> mSupportFRef; //if you want to use fragment.startActivityForResutl
+        private Fragment mSupportFra; //if you want to use fragment.startActivityForResutl
         private int mRequestCode = 0;  // request code to start activity for result
-        private WeakReference<android.app.Fragment> mFRef; //if you want to use android.app.fragment to startActivityForResult, you should set this
+        private android.app.Fragment mFra; //if you want to use android.app.fragment to startActivityForResult, you should set this
 
 
         public Builder(IRouter router){
@@ -177,28 +181,28 @@ public class ActivityRoute extends BaseRoute {
          */
         public Builder withOpenMethodStart(Activity activity){
             mOpenType = START;
-            mARef = new WeakReference<>(activity);
+            mAct = activity;
             return this;
         }
 
         public Builder withOpenMethodStartForResult(Activity activity, int requestCode){
             mRequestCode = requestCode;
             mOpenType = FOR_RESULT_ACTIVITY;
-            mARef = new WeakReference<>(activity);
+            mAct = activity;
             return this;
         }
 
         public Builder withOpenMethodStartForResult(Fragment fragment, int requestCode){
             mRequestCode = requestCode;
             mOpenType = FOR_RESULT_SUPPORT_FRAGMENT;
-            mSupportFRef = new WeakReference<Fragment>(fragment);
+            mSupportFra = fragment;
             return this;
         }
 
         public Builder withOpenMethodStartForResult(android.app.Fragment fragment, int requestCode){
             mRequestCode = requestCode;
             mOpenType = FOR_RESULT_FRAGMENT;
-            mFRef = new WeakReference<>(fragment);
+            mFra = fragment;
             return this;
         }
 
@@ -219,7 +223,7 @@ public class ActivityRoute extends BaseRoute {
          * @return
          */
         public Builder withAnimation(Activity activity, int inAnimation, int outAnimation){
-            mARef = new WeakReference<Activity>(activity);
+            mAct = activity;
             mInAnimation = inAnimation;
             mOutAnimation = outAnimation;
             return this;
@@ -229,13 +233,21 @@ public class ActivityRoute extends BaseRoute {
 
         public ActivityRoute build(){
             ActivityRoute route = new ActivityRoute(mRouter, mUrl);
-            if(mARef != null && mARef.get() != null && mInAnimation != -1 && mOutAnimation != -1){
-                route.setAnimation(mARef.get(), mInAnimation, mOutAnimation);
+            if(mAct!=null && mInAnimation != -1 && mOutAnimation != -1){
+                route.setAnimation(mAct, mInAnimation, mOutAnimation);
             }
-            route.withOpenMethodStart(mARef != null ? mARef.get() : null);
-            route.withOpenMethodStartForResult(mARef != null ? mARef.get() : null, mRequestCode);
-            route.withOpenMethodStartForResult(mFRef != null ? mFRef.get() : null, mRequestCode);
-            route.withOpenMethodStartForResult(mSupportFRef != null ? mSupportFRef.get() : null, mRequestCode);
+            route.withOpenMethodStart(mAct);
+            switch (mOpenType){
+                case 1:
+                    route.withOpenMethodStartForResult(mAct, mRequestCode);
+                    break;
+                case 2:
+                    route.withOpenMethodStartForResult(mSupportFra, mRequestCode);
+                    break;
+                case 3:
+                    route.withOpenMethodStartForResult(mFra, mRequestCode);
+            }
+            route.setExtras(mBundle);
             return route;
         }
     }

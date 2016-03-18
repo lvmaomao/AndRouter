@@ -83,7 +83,12 @@ public class ActivityRouteRuleBuilder extends BaseRouteRuleBuilder {
     }
 
 
-
+    /**
+     * @deprecated 不是非常可靠，在url格式不正确的时候getPathSegments返回一个空的列表，然后就返回true了
+     * @param url
+     * @return
+     */
+    @Deprecated
     public static boolean isActivityRuleValid(String url) {
         String pattern = ":[iflds]?\\{[a-zA-Z0-9]+\\}"; //key 支持大小写字母及数字
         Pattern p = Pattern.compile(pattern);

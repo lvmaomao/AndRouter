@@ -2,7 +2,6 @@ package cn.campusapp.router.utils;
 
 import android.net.Uri;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -21,13 +20,8 @@ public class UrlUtils {
      * @param url
      * @return
      */
-    public static List<String> getPathSegments(String url){
-        try {
-            return Uri.parse(url).getPathSegments();
-        } catch (Exception e){
-            Timber.e(e, "url parse fail");
-        }
-        return new ArrayList<>();
+    public static List<String> getPathSegments(String url) {
+        return Uri.parse(url).getPathSegments();
     }
 
     /**
@@ -36,12 +30,7 @@ public class UrlUtils {
      * @return
      */
     public static String getScheme(String url){
-        try{
-            return Uri.parse(url).getScheme();
-        } catch (Exception e){
-            Timber.e(e, "url parse fail");
-        }
-        return null;
+        return Uri.parse(url).getScheme();
     }
 
 
@@ -49,21 +38,11 @@ public class UrlUtils {
      * get the protocol of the url
      */
     public static int getPort(String url){
-        try{
-            return Uri.parse(url).getPort();
-        } catch (Exception e){
-            Timber.e(e, "url parse fail");
-        }
-        return -1;
+        return Uri.parse(url).getPort();
     }
 
     public static String getHost(String url){
-        try{
-            return Uri.parse(url).getHost();
-        } catch (Exception e){
-            Timber.e(e, "url parse fail");
-        }
-        return null;
+        return Uri.parse(url).getHost();
     }
 
     public static HashMap<String, String> getParameters(String url){

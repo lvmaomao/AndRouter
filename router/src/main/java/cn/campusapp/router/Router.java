@@ -1,7 +1,6 @@
 package cn.campusapp.router;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import cn.campusapp.router.route.IRoute;
 import cn.campusapp.router.router.ActivityRouter;
@@ -38,7 +37,6 @@ public class Router {
      * @param url
      * @return
      */
-    @Nullable
     public static IRoute getRoute(String url){
         return RouterManager.getSingleton().getRoute(url);
     }

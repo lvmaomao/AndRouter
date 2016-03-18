@@ -3,7 +3,6 @@ package cn.campusapp.router.tools;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.campusapp.router.exception.NotAllKeySetException;
 import cn.campusapp.router.utils.UrlUtils;
 import timber.log.Timber;
 
@@ -65,7 +64,7 @@ public class ActivityRouteUrlBuilder {
         return this;
     }
 
-    public String build() throws NotAllKeySetException{
+    public String build(){
         Matcher matcher = Pattern.compile(":[i, f, l, d, s, c]?\\{[a-zA-Z0-9]+?\\}").matcher(mPath);
         if(matcher.find()){
             Timber.w(TAG, "Not all the key settled");

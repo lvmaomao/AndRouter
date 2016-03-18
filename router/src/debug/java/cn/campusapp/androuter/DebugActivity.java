@@ -1,11 +1,11 @@
 package cn.campusapp.androuter;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import cn.campusapp.router.R;
 
-public class DebugActivity extends AppCompatActivity {
+public class DebugActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

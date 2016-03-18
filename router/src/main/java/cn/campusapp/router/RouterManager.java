@@ -2,6 +2,7 @@ package cn.campusapp.router;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -36,6 +37,14 @@ public class RouterManager {
 
     public synchronized void addRouter(IRouter router){
         if(router != null){
+            //first remove all the duplicate routers
+            List<IRouter> duplicateRouters = new ArrayList<>();
+            for(IRouter r : mRouters){
+                if(r.getClass().equals(router.getClass())){
+                    duplicateRouters.add(r);
+                }
+            }
+            mRouters.removeAll(duplicateRouters);
             mRouters.add(router);
         } else {
             Timber.e(new NullPointerException("The Router" +
@@ -46,12 +55,24 @@ public class RouterManager {
 
     public synchronized void initBrowserRouter(Context context){
         mBrowserRouter.init(context);
-        mRouters.add(mBrowserRouter);
+        addRouter(mBrowserRouter);
     }
 
     public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer){
+        initActivityRouter(context, initializer, null);
+    }
+
+
+    public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer, String scheme){
         mActivityRouter.init(context, initializer);
-        mRouters.add(mActivityRouter);
+        if(!TextUtils.isEmpty(scheme)) {
+            mActivityRouter.setMatchScheme(scheme);
+        }
+        addRouter(mActivityRouter);
+    }
+
+    public List<IRouter> getRouters(){
+        return mRouters;
     }
 
 
@@ -93,33 +114,16 @@ public class RouterManager {
      * set your own activity router
      */
     public void setActivityRouter(ActivityRouter router){
-        mActivityRouter = router;
-        List<IRouter> activityRouters = new ArrayList<>();
-        for(IRouter r : mRouters){
-            if(r instanceof ActivityRouter){
-                activityRouters.add(r);
-            }
-        }
-        mRouters.removeAll(activityRouters);
-        //remove all the activity routers, and add the router user set
-        mRouters.add(router);
+        addRouter(router);
     }
 
     /**
      * set your own BrowserRouter
      */
     public void setBrowserRouter(BrowserRouter router){
-        mBrowserRouter = router;
-        List<IRouter> browserRouters = new ArrayList<>();
-        for(IRouter r : mRouters){
-            if(r instanceof BrowserRouter){
-                browserRouters.add(r);
-            }
-        }
-        mRouters.removeAll(browserRouters);
-        mRouters.add(router);
-
+        addRouter(router);
     }
+
 
 
 }
