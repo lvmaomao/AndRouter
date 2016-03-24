@@ -1,6 +1,9 @@
 # AndRouter
 AndRouter is a android framework used to map url to activities or actions. 
 
+## 中文设计文档
+[Android路由框架设计与实现](http://sixwolf.net/blog/2016/03/23/Android%E8%B7%AF%E7%94%B1%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/)
+
 ## Features
 - AndRouter implements activities router, so it only need to define the activities mapping table and enjoy using url to open activities.
 - AndRouter implements Browser router. So it can be used to open a web url. It will use the system browser to open it.
