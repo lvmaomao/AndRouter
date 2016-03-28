@@ -179,7 +179,7 @@ And add it to the RouterManager
 	Router.addRouter(new TestRouter());
 ```
 ## Install
-It needs to be added to the jitpack.io repository:
+First, add jitpack.io to your repositories.
 
 ```
 allprojects {
@@ -190,7 +190,7 @@ allprojects {
 }
 ```
 
-and:
+Then, add the dependency.
 
 ```
 dependencies {
