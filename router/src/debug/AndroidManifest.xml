@@ -3,7 +3,7 @@
     package="cn.campusapp.router">
 
     <application>
-        <activity android:name="cn.campusapp.androuter.DebugActivity"></activity>
+        <activity android:name="cn.campusapp.router.DebugActivity"></activity>
     </application>
 
 </manifest>

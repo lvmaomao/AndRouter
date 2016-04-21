@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,9 +25,22 @@ public class RouterManager {
     private static final RouterManager singleton = new RouterManager();
 
     //注意这是个list是有顺序的，所以排在前面的优先级会比较高
-    List<IRouter> mRouters = new LinkedList<>();
-    ActivityRouter mActivityRouter = new ActivityRouter();   //Activity
-    BrowserRouter mBrowserRouter = new BrowserRouter();  //浏览器
+    static List<IRouter> mRouters = new LinkedList<>();
+    static ActivityRouter mActivityRouter = new ActivityRouter();   //Activity
+    static BrowserRouter mBrowserRouter = new BrowserRouter();  //浏览器
+
+
+    static {
+        try {
+            Constructor<?> constructor =  Class.forName("cn.campusapp.router.router.AnnotatedRouterTableInitializer").getConstructor();
+            IActivityRouteTableInitializer initializer = (IActivityRouteTableInitializer) constructor.newInstance();
+            mActivityRouter.initActivityRouterTable(initializer);
+
+        } catch (Exception e) {
+            Timber.e(e, "");
+        }
+    }
+
 
     private RouterManager(){}
 
@@ -68,7 +82,9 @@ public class RouterManager {
         if(!TextUtils.isEmpty(scheme)) {
             mActivityRouter.setMatchScheme(scheme);
         }
-        addRouter(mActivityRouter);
+        if(! mRouters.contains(mActivityRouter)) {
+            addRouter(mActivityRouter);
+        }
     }
 
     public List<IRouter> getRouters(){

@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
-import cn.campusapp.androuter.DebugActivity;
 import cn.campusapp.router.route.ActivityRoute;
 import cn.campusapp.router.route.BaseRoute;
 import cn.campusapp.router.route.IRoute;

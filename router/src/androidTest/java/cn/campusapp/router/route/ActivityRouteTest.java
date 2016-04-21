@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 import java.util.Map;
 
-import cn.campusapp.androuter.DebugActivity;
+import cn.campusapp.router.DebugActivity;
 import cn.campusapp.router.router.ActivityRouter;
 import cn.campusapp.router.router.IRouter;
 

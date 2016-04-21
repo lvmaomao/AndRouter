@@ -50,6 +50,23 @@ public class ActivityRouter extends BaseRouter {
 
     public void init(Context appContext, IActivityRouteTableInitializer initializer) {
         mBaseContext = appContext;
+        initActivityRouterTable(initializer);
+    }
+
+
+    public void init(Context appContext) {
+        mBaseContext = appContext;
+        
+        for(String pathRule : mRouteTable.keySet()){
+            boolean isValid = ActivityRouteRuleBuilder.isActivityRuleValid(pathRule);
+            if(!isValid){
+                Timber.e(new InvalidRoutePathException(pathRule), "");
+                mRouteTable.remove(pathRule);
+            }
+        }
+    }
+
+    public void initActivityRouterTable(IActivityRouteTableInitializer initializer){
         initializer.initRouterTable(mRouteTable);
         for(String pathRule : mRouteTable.keySet()){
             boolean isValid = ActivityRouteRuleBuilder.isActivityRuleValid(pathRule);

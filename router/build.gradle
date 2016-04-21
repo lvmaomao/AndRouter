@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.campusappcn'
@@ -43,4 +43,5 @@ dependencies {
     // Set this dependency to build and run Espresso tests
     // Optional -- UI testing with Espresso
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    compile project(':annotation')
 }
