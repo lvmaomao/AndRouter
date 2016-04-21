@@ -234,7 +234,7 @@ Add dependeny to apt:
 ```java
 buildscript {
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 ```
