@@ -26,7 +26,7 @@ Here are two methods to initialize the ActivityRouter.
 It supports using Java annotations to map urls to Activities. For example, the code below maps the urls of "activity://second" and "activity://second2" to SecondActivity.
 
 ```java
-@Router({"activity://second", "activity://second2"})
+@RouterMap({"activity://second", "activity://second2"})
 public class SecondActivity extends Activity {
 
     @Override
