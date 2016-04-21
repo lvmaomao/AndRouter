@@ -23,6 +23,7 @@ public class App extends Application {
                 router.put("activity://second/:{name}", SecondActivity.class);
             }
         });
+//        Router.initActivityRouter(this);
         Router.initBrowserRouter(getApplicationContext());
         Timber.plant(new Timber.DebugTree());
     }

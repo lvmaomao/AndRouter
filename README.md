@@ -17,6 +17,45 @@ AndRouter is an Android framework used to map urls to activities or actions.
 ### Initialize
 It needs to be initialized if you want to use the default activity router and browser router. 
 
+### Initialize the ActivityRouter
+
+Here are two methods to initialize the ActivityRouter.
+
+#### Annotation
+
+It supports using Java annotations to map urls to Activities. For example, the code below maps the urls of "activity://second" and "activity://second2" to SecondActivity.
+
+```java
+@Router({"activity://second", "activity://second2"})
+public class SecondActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_second);
+    }
+}
+
+```
+
+And in the Application class of your app, you need to init the ActivityRouter.
+
+```java
+public class App extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Router.initActivityRouter(getApplicationContext());
+    }
+}
+
+```
+
+#### Initializer class
+
+Or you can use an IActivityRouteTableInitializer implementation to add the activity router table. In the code below, some routes are added. For example, the route "activity://first/:s{name}/:i{age}/birthday" will map to FirstActivity.class. The route consists of four parts. It's recommended to do this in the Application class of your app.
+
 ```java
     Router.initActivityRouter(getApplicationContext(), new IActivityRouteTableInitializer() {
             @Override
@@ -29,19 +68,28 @@ It needs to be initialized if you want to use the default activity router and br
                 router.put("activity://four/buy/:s{name}/:f{price}", FourActivity.class);                           
             }
         });
-// if you want to change the default scheme of ActivityRouter
-//        Router.initActivityRouter(getApplicationContext(), "hello", new IActivityRouteTableInitializer() {
-//            @Override
-//            public void initRouterTable(Map<String, Class<? extends Activity>> router) {
-//                router.put("hello://second/:{name}", SecondActivity.class);
-//            }
-//        });
-    Router.initBrowserRouter(getApplicationContext());
 
 ```
 
-ActivityRouter needs an IActivityRouteTableInitializer implementation to add the activity router table. In the code above, some routes are added. For example, the route "activity://first/:s{name}/:i{age}/birthday" will map to FirstActivity.class. The route consists of four parts.
+It supports to use these two methods together.
 
+### Initialize the BrowserRouter
+
+The same with ActivityRouter. Do this in Application class.
+
+```java
+public class App extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Router.initBrowserRouter(getApplicationContext());
+    }
+}
+
+```
+
+### Definition Of Route Url
 - Scheme: Normally, define which router to use, the "activity" in the example.
 - Host: Normally, define where to go, the "first" in the example.
 - Path: Define key value and path, the "/:s{name}/:i{age}/birthday" in the example. The path segments can be divided into two types. One, the fixed path, such as "birthday", it's fixed. And the value key such as the :s{name}, it defines values in the path. In url, it will be replaced with value. For example, ":s{name}" can be replaced with "kris", and it will be set to the intent extras with putExtra("name", "kris"). Then in the routing activity, the value of "name" can be get with getStringExtra("name"). The table below showes the value key format. ":{}" is essential. And the character after ':' defines the type of the value. If the url mathes but the value type not matches, it will throw RuntimeException, which you should pay attention to.
@@ -179,7 +227,19 @@ And add it to the RouterManager
 	Router.addRouter(new TestRouter());
 ```
 ## Install
-First, add jitpack.io to your repositories.
+In the build.gradle file of your project. You need to:
+
+Add dependeny to apt:
+
+```java
+buildscript {
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
+    }
+}
+```
+
+Add jitpack repository:
 
 ```
 allprojects {
@@ -194,7 +254,8 @@ Then, add the dependency.
 
 ```
 dependencies {
-    compile 'com.github.campusappcn:AndRouter:1.0.0'
+    compile 'com.github.campusappcn.AndRouter:router:1.2.0'
+    apt 'com.github.campusappcn.AndRouter:compiler:1.2.0'
 }
 ```
 

@@ -27,6 +27,10 @@ public class Router {
         RouterManager.getSingleton().initActivityRouter(context, initializer);
     }
 
+    public static synchronized void initActivityRouter(Context context){
+        RouterManager.getSingleton().initActivityRouter(context);
+    }
+
 
     public static synchronized void initActivityRouter(Context context, String scheme, IActivityRouteTableInitializer initializer){
         RouterManager.getSingleton().initActivityRouter(context, initializer, scheme);

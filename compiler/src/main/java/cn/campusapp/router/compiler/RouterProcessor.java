@@ -29,7 +29,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
-import cn.campusapp.router.annotation.Router;
+import cn.campusapp.router.annotation.RouterMap;
 import cn.campusapp.router.compiler.exception.TargetErrorException;
 
 
@@ -49,7 +49,7 @@ public class RouterProcessor extends AbstractProcessor{
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Collections.singleton(Router.class.getCanonicalName());
+        return Collections.singleton(RouterMap.class.getCanonicalName());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class RouterProcessor extends AbstractProcessor{
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Router.class);
+        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(RouterMap.class);
 
         try {
             TypeSpec type = getRouterTableInitializer(elements);
@@ -94,7 +94,7 @@ public class RouterProcessor extends AbstractProcessor{
             if(element.getKind() != ElementKind.CLASS){
                 throw new TargetErrorException();
             }
-            Router router = element.getAnnotation(Router.class);
+            RouterMap router = element.getAnnotation(RouterMap.class);
             String [] routerUrls = router.value();
             if(routerUrls != null){
                 for(String routerUrl : routerUrls){

@@ -74,8 +74,13 @@ public class RouterManager {
 
     public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer){
         initActivityRouter(context, initializer, null);
+
     }
 
+    public synchronized void initActivityRouter(Context context){
+        mActivityRouter.init(context);
+        addRouter(mActivityRouter);
+    }
 
     public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer, String scheme){
         mActivityRouter.init(context, initializer);
