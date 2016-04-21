@@ -250,7 +250,7 @@ allprojects {
 }
 ```
 
-Then, add the dependency.
+Then, in the build.gradle file of your app module, you need to add these dependencies.
 
 ```
 dependencies {
