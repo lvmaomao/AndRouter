@@ -10,7 +10,7 @@ import java.util.Date;
 import cn.campusapp.router.annotation.Router;
 
 
-@Router("activity://third")
+@Router({"activity://third", "activity://third2"})
 public class ThirdActivity extends Activity {
 
     TextView vTimeTv;
