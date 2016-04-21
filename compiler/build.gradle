@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
-group='com.github.campusappcn.androuter'
+group='com.github.campusappcn'
 
 dependencies {
     compile project(':annotation')  //发布之后需要替换为网上的地址，
