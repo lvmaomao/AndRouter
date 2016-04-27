@@ -37,7 +37,7 @@ public class RouterManager {
             mActivityRouter.initActivityRouterTable(initializer);
 
         } catch (Exception e) {
-            Timber.e(e, "");
+            //do nothing
         }
     }
 
