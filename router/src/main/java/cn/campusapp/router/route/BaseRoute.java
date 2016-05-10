@@ -66,7 +66,7 @@ public abstract class BaseRoute implements IRoute {
 
 
     @Override
-    public void open() {
-        mRouter.open(this);
+    public boolean open() {
+        return mRouter.open(this);
     }
 }

@@ -8,9 +8,19 @@ import cn.campusapp.router.route.IRoute;
 public interface IRouter {
 
 
-    void open(IRoute route);
+    /**
+     *
+     * @param route
+     * @return true: open success, fail: open fail
+     */
+    boolean open(IRoute route);
 
-    void open(String url);
+    /**
+     *
+     * @param url
+     * @return true: open success, fail: open fail
+     */
+    boolean open(String url);
 
     /**
      * build the route according to the url, if not match, return null

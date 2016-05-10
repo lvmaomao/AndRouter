@@ -36,8 +36,8 @@ public class Router {
         RouterManager.getSingleton().initActivityRouter(context, initializer, scheme);
     }
 
-    public static void open(String url){
-        RouterManager.getSingleton().open(url);
+    public static boolean open(String url){
+        return RouterManager.getSingleton().open(url);
     }
 
     /**
@@ -50,8 +50,8 @@ public class Router {
     }
 
 
-    public static void openRoute(IRoute route){
-        RouterManager.getSingleton().openRoute(route);
+    public static boolean openRoute(IRoute route){
+        return RouterManager.getSingleton().openRoute(route);
     }
 
     public static void setActivityRouter(ActivityRouter router){

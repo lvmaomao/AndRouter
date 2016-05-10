@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
 
     Button btn7;
 
+    Button btn8;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,9 @@ public class MainActivity extends Activity {
         btn5 = (Button) findViewById(R.id.btn5);
         btn6 = (Button) findViewById(R.id.btn6);
         btn7 = (Button) findViewById(R.id.btn7);
+        btn8 = (Button) findViewById(R.id.btn8);
+
+
 
 
         btn1.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +95,13 @@ public class MainActivity extends Activity {
                 openThirdActivityWithExtraValueUsingAnotherRoute();
             }
         });
+
+        btn8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openUnknowUrl();
+            }
+        });
     }
 
 
@@ -128,9 +140,13 @@ public class MainActivity extends Activity {
     private void openThirdActivityWithExtraValueUsingAnotherRoute(){
         Date date = new Date();
         ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://third2");
-        activityRoute
+        toasts("" + activityRoute
                 .withParams("date", date)
-                .open();
+                .open());
+    }
+
+    private void openUnknowUrl(){
+        toasts("" + Router.open("activity://unknow"));
     }
 
 
@@ -141,4 +157,11 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "Result code "+ resultCode, Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    private void toasts(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+
 }

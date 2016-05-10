@@ -32,18 +32,17 @@ import static cn.campusapp.router.utils.UrlUtils.getScheme;
  */
 public class ActivityRouter extends BaseRouter {
     private static final String TAG = "Router";
-    private static String MATCH_SCHEME = "activity";
     static ActivityRouter mSharedActivityRouter = new ActivityRouter();
-    Context mBaseContext;
-    Map<String, Class<? extends Activity>> mRouteTable = new HashMap<>();
-
+    private static String MATCH_SCHEME = "activity";
 
     static {
         CAN_OPEN_ROUTE = ActivityRoute.class;
     }
 
+    Context mBaseContext;
+    Map<String, Class<? extends Activity>> mRouteTable = new HashMap<>();
 
-    public static ActivityRouter getSharedRouter(){
+    public static ActivityRouter getSharedRouter() {
         return mSharedActivityRouter;
     }
 
@@ -56,21 +55,21 @@ public class ActivityRouter extends BaseRouter {
 
     public void init(Context appContext) {
         mBaseContext = appContext;
-        
-        for(String pathRule : mRouteTable.keySet()){
+
+        for (String pathRule : mRouteTable.keySet()) {
             boolean isValid = ActivityRouteRuleBuilder.isActivityRuleValid(pathRule);
-            if(!isValid){
+            if (!isValid) {
                 Timber.e(new InvalidRoutePathException(pathRule), "");
                 mRouteTable.remove(pathRule);
             }
         }
     }
 
-    public void initActivityRouterTable(IActivityRouteTableInitializer initializer){
+    public void initActivityRouterTable(IActivityRouteTableInitializer initializer) {
         initializer.initRouterTable(mRouteTable);
-        for(String pathRule : mRouteTable.keySet()){
+        for (String pathRule : mRouteTable.keySet()) {
             boolean isValid = ActivityRouteRuleBuilder.isActivityRuleValid(pathRule);
-            if(!isValid){
+            if (!isValid) {
                 Timber.e(new InvalidRoutePathException(pathRule), "");
                 mRouteTable.remove(pathRule);
             }
@@ -97,13 +96,12 @@ public class ActivityRouter extends BaseRouter {
         return TextUtils.equals(getScheme(url), MATCH_SCHEME);
     }
 
-
-    public void setMatchScheme(String scheme){
-        MATCH_SCHEME = scheme;
+    public String getMatchScheme() {
+        return MATCH_SCHEME;
     }
 
-    public String getMatchScheme(){
-        return MATCH_SCHEME;
+    public void setMatchScheme(String scheme) {
+        MATCH_SCHEME = scheme;
     }
 
     @Override
@@ -112,102 +110,112 @@ public class ActivityRouter extends BaseRouter {
     }
 
     @Override
-    public void open(IRoute route) {
-        if(route instanceof ActivityRoute){
+    public boolean open(IRoute route) {
+        boolean ret = false;
+        if (route instanceof ActivityRoute) {
             ActivityRoute aRoute = (ActivityRoute) route;
-            switch (aRoute.getOpenType()){
-                case ActivityRoute.START:
-                    open(aRoute, aRoute.getActivity());
-                    break;
-                case ActivityRoute.FOR_RESULT_ACTIVITY:
-                    openForResult(aRoute, aRoute.getActivity(), aRoute.getRequestCode());
-                    break;
-                case ActivityRoute.FOR_RESULT_SUPPORT_FRAGMENT:
-                    openForResult(aRoute, aRoute.getSupportFragment(), aRoute.getRequestCode());
-                    break;
-                case ActivityRoute.FOR_RESULT_FRAGMENT:
-                    openForResult(aRoute, aRoute.getFragment(), aRoute.getRequestCode());
-                    break;
-                default:
-                    Timber.e("Error Open Type");
+            try {
+                switch (aRoute.getOpenType()) {
+                    case ActivityRoute.START:
+                        open(aRoute, aRoute.getActivity());
+                        ret = true;
+                        break;
+                    case ActivityRoute.FOR_RESULT_ACTIVITY:
+                        openForResult(aRoute, aRoute.getActivity(), aRoute.getRequestCode());
+                        ret = true;
+                        break;
+                    case ActivityRoute.FOR_RESULT_SUPPORT_FRAGMENT:
+                        openForResult(aRoute, aRoute.getSupportFragment(), aRoute.getRequestCode());
+                        ret = true;
+                        break;
+                    case ActivityRoute.FOR_RESULT_FRAGMENT:
+                        openForResult(aRoute, aRoute.getFragment(), aRoute.getRequestCode());
+                        ret = true;
+                        break;
+                    default:
+                        Timber.e("Error Open Type");
+                        ret = false;
+                        break;
+
+                }
+            } catch (Exception e) {
+                Timber.e(e, "Url route not specified: %s", route.getUrl());
+                ret = false;
             }
         }
+        return ret;
 
     }
 
     @Override
-    public void open(String url) {
-        open(getRoute(url));
+    public boolean open(String url) {
+        return open(getRoute(url));
     }
 
 
-    protected void open(ActivityRoute route, Context context) {
-        try {
-            Intent intent = match(route);
-            if(intent == null){
-                Timber.e(new RouteNotFoundException(route.getUrl()), "");
-                return;
-            }
-
-            if(context == null) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mBaseContext.startActivity(intent);
-            } else {
-                context.startActivity(intent);
-            }
-
-            if(route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null){
-                route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
-            }
-        } catch (Exception e){
-            Timber.e(e, "");
+    protected void open(ActivityRoute route, Context context) throws RouteNotFoundException {
+        Intent intent = match(route);
+        if (intent == null) {
+            throw new RouteNotFoundException(route.getUrl());
         }
-    }
 
-    protected void openForResult(ActivityRoute route, Activity activity, int requestCode) {
-
-        try {
-            Intent intent = match(route);
-            if(route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null){
-                route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
-            }
-            activity.startActivityForResult(intent, requestCode);
-        } catch (Exception e){
-            Timber.e(e, "");
+        if (context == null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mBaseContext.startActivity(intent);
+        } else {
+            context.startActivity(intent);
         }
-    }
 
-    protected void openForResult(ActivityRoute route, Fragment fragment, int requestCode) {
-
-        try {
-            Intent intent = match(route);
-            if(route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null){
-                route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
-            }
-            fragment.startActivityForResult(intent, requestCode);
-        } catch (Exception e){
-            Timber.e(e, "");
+        if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
+            route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
         }
+
     }
 
-    protected void openForResult(ActivityRoute route, android.app.Fragment fragment, int requestCode) {
+    protected void openForResult(ActivityRoute route, Activity activity, int requestCode) throws RouteNotFoundException {
 
-        try {
-            Intent intent = match(route);
-            if(route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null){
-                route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
-            }
-            fragment.startActivityForResult(intent, requestCode);
-        } catch (Exception e){
-            Timber.e(e, "");
+
+        Intent intent = match(route);
+        if (intent == null) {
+            throw new RouteNotFoundException(route.getUrl());
         }
+        if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
+            route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
+        }
+        activity.startActivityForResult(intent, requestCode);
+
     }
 
+    protected void openForResult(ActivityRoute route, Fragment fragment, int requestCode) throws RouteNotFoundException {
 
+        Intent intent = match(route);
+        if (intent == null) {
+            throw new RouteNotFoundException(route.getUrl());
+        }
+        if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
+            route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
+        }
+        fragment.startActivityForResult(intent, requestCode);
+
+    }
+
+    protected void openForResult(ActivityRoute route, android.app.Fragment fragment, int requestCode) throws RouteNotFoundException {
+
+        Intent intent = match(route);
+        if (intent == null) {
+            throw new RouteNotFoundException(route.getUrl());
+        }
+        if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
+            route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
+        }
+        fragment.startActivityForResult(intent, requestCode);
+
+    }
 
 
     /**
      * host 和path匹配称之为路由匹匹配
+     *
      * @param route
      * @return String the match routePath
      */
@@ -215,17 +223,17 @@ public class ActivityRouter extends BaseRouter {
     private String findMatchedRoute(ActivityRoute route) {
         List<String> givenPathSegs = route.getPath();
         OutLoop:
-        for(String routeUrl : mRouteTable.keySet()){
+        for (String routeUrl : mRouteTable.keySet()) {
             List<String> routePathSegs = getPathSegments(routeUrl);
-            if(!TextUtils.equals(getHost(routeUrl), route.getHost())){
+            if (!TextUtils.equals(getHost(routeUrl), route.getHost())) {
                 continue;
             }
-            if(givenPathSegs.size() != routePathSegs.size()){
+            if (givenPathSegs.size() != routePathSegs.size()) {
                 continue;
             }
-            for(int i=0;i<routePathSegs.size();i++){
-                if(!routePathSegs.get(i).startsWith(":")
-                        &&!TextUtils.equals(routePathSegs.get(i), givenPathSegs.get(i))) {
+            for (int i = 0; i < routePathSegs.size(); i++) {
+                if (!routePathSegs.get(i).startsWith(":")
+                        && !TextUtils.equals(routePathSegs.get(i), givenPathSegs.get(i))) {
                     continue OutLoop;
                 }
             }
@@ -238,32 +246,33 @@ public class ActivityRouter extends BaseRouter {
 
     /**
      * find the key value in the path and set them in the intent
+     *
      * @param routeUrl the matched route path
      * @param givenUrl the given path
-     * @param intent the intent
+     * @param intent   the intent
      * @return the intent
      */
     private Intent setKeyValueInThePath(String routeUrl, String givenUrl, Intent intent) {
         List<String> routePathSegs = getPathSegments(routeUrl);
         List<String> givenPathSegs = getPathSegments(givenUrl);
-        for(int i = 0;i<routePathSegs.size();i++){
+        for (int i = 0; i < routePathSegs.size(); i++) {
             String seg = routePathSegs.get(i);
-            if(seg.startsWith(":")){
+            if (seg.startsWith(":")) {
                 int indexOfLeft = seg.indexOf("{");
                 int indexOfRight = seg.indexOf("}");
                 String key = seg.substring(indexOfLeft + 1, indexOfRight);
                 char typeChar = seg.charAt(1);
-                switch (typeChar){
+                switch (typeChar) {
                     //interger type
                     case 'i':
                         try {
                             int value = Integer.parseInt(givenPathSegs.get(i));
                             intent.putExtra(key, value);
-                        } catch(Exception e){
-                            Log.e(TAG, "解析整形类型失败 "+ givenPathSegs.get(i), e);
-                            if(BuildConfig.DEBUG){
+                        } catch (Exception e) {
+                            Log.e(TAG, "解析整形类型失败 " + givenPathSegs.get(i), e);
+                            if (BuildConfig.DEBUG) {
                                 throw new InvalidValueTypeException(givenUrl, givenPathSegs.get(i));
-                            } else{
+                            } else {
                                 //如果是在release情况下则给一个默认值
                                 intent.putExtra(key, 0);
                             }
@@ -274,9 +283,9 @@ public class ActivityRouter extends BaseRouter {
                         try {
                             float value = Float.parseFloat(givenPathSegs.get(i));
                             intent.putExtra(key, value);
-                        } catch(Exception e){
+                        } catch (Exception e) {
                             Log.e(TAG, "解析浮点类型失败 " + givenPathSegs.get(i), e);
-                            if(BuildConfig.DEBUG) {
+                            if (BuildConfig.DEBUG) {
                                 throw new InvalidValueTypeException(givenUrl, givenPathSegs.get(i));
                             } else {
                                 intent.putExtra(key, 0f);
@@ -285,12 +294,12 @@ public class ActivityRouter extends BaseRouter {
                         break;
                     case 'l':
                         //long type
-                        try{
+                        try {
                             long value = Long.parseLong(givenPathSegs.get(i));
                             intent.putExtra(key, value);
-                        } catch(Exception e){
+                        } catch (Exception e) {
                             Log.e(TAG, "解析长整形失败 " + givenPathSegs.get(i), e);
-                            if(BuildConfig.DEBUG){
+                            if (BuildConfig.DEBUG) {
                                 throw new InvalidValueTypeException(givenUrl, givenPathSegs.get(i));
                             } else {
                                 intent.putExtra(key, 0l);
@@ -298,12 +307,12 @@ public class ActivityRouter extends BaseRouter {
                         }
                         break;
                     case 'd':
-                        try{
+                        try {
                             double value = Double.parseDouble(givenPathSegs.get(i));
                             intent.putExtra(key, value);
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             Log.e(TAG, "解析double类型失败 " + givenPathSegs.get(i), e);
-                            if(BuildConfig.DEBUG){
+                            if (BuildConfig.DEBUG) {
                                 throw new InvalidValueTypeException(givenUrl, givenPathSegs.get(i));
                             } else {
                                 intent.putExtra(key, 0d);
@@ -313,9 +322,9 @@ public class ActivityRouter extends BaseRouter {
                     case 'c':
                         try {
                             char value = givenPathSegs.get(i).charAt(0);
-                        } catch(Exception e){
+                        } catch (Exception e) {
                             Log.e(TAG, "解析Character类型失败" + givenPathSegs.get(i), e);
-                            if(BuildConfig.DEBUG){
+                            if (BuildConfig.DEBUG) {
                                 throw new InvalidValueTypeException(givenUrl, givenPathSegs.get(i));
                             } else {
                                 intent.putExtra(key, ' ');
@@ -332,16 +341,16 @@ public class ActivityRouter extends BaseRouter {
         return intent;
     }
 
-    private Intent setOptionParams(String url, Intent intent){
+    private Intent setOptionParams(String url, Intent intent) {
         Map<String, String> queryParams = UrlUtils.getParameters(url);
-        for(String key: queryParams.keySet()){
+        for (String key : queryParams.keySet()) {
             intent.putExtra(key, queryParams.get(key));
         }
 
         return intent;
     }
 
-    private Intent setExtras(Bundle bundle, Intent intent){
+    private Intent setExtras(Bundle bundle, Intent intent) {
         intent.putExtras(bundle);
         return intent;
     }
@@ -349,7 +358,7 @@ public class ActivityRouter extends BaseRouter {
     @Nullable
     private Intent match(ActivityRoute route) {
         String matchedRoute = findMatchedRoute(route);
-        if(matchedRoute == null){
+        if (matchedRoute == null) {
             return null;
         }
         Class<? extends Activity> matchedActivity = mRouteTable.get(matchedRoute);

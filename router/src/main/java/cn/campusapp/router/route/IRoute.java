@@ -31,6 +31,11 @@ public interface IRoute {
     Map<String, String> getParameters();
 
     //Route can open itself
-    void open();
+
+    /**
+     *
+     * @return true: open success, false : open fail
+     */
+    boolean open();
 
 }

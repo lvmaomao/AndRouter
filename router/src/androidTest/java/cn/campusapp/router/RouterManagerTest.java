@@ -68,13 +68,15 @@ public class RouterManagerTest extends BaseUnitTest{
     private static class TestRouter extends BaseRouter{
 
         @Override
-        public void open(IRoute route) {
+        public boolean open(IRoute route) {
             Timber.i(route.getUrl());
+            return true;
         }
 
         @Override
-        public void open(String url) {
+        public boolean open(String url) {
             Timber.i(url);
+            return true;
         }
 
         @Override

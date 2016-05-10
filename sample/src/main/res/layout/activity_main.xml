@@ -54,4 +54,11 @@
         android:text="Open WebView"/>
 
 
+    <Button
+        android:id="@+id/btn8"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Unknow"/>
+
+
 </LinearLayout>

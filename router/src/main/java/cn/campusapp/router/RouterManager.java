@@ -97,13 +97,13 @@ public class RouterManager {
     }
 
 
-    public void open(String url){
+    public boolean open(String url){
         for(IRouter router : mRouters){
             if(router.canOpenTheUrl(url)){
-                router.open(url);
-                break;
+                return router.open(url);
             }
         }
+        return false;
     }
 
     /**
@@ -122,13 +122,13 @@ public class RouterManager {
     }
 
 
-    public void openRoute(IRoute route){
+    public boolean openRoute(IRoute route){
         for(IRouter router : mRouters){
             if(router.canOpenTheRoute(route)){
-                router.open(route);
-                break;
+                return router.open(route);
             }
         }
+        return false;
     }
 
     /**

@@ -31,16 +31,18 @@ public class BrowserRouter extends BaseRouter {
 
 
     @Override
-    public void open(IRoute route) {
+    public boolean open(IRoute route) {
         Uri uri = Uri.parse(route.getUrl());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mBaseContext.startActivity(intent);
+        return true;
     }
 
     @Override
-    public void open(String url) {
+    public boolean open(String url) {
         open(getRoute(url));
+        return true;
     }
 
     @Override
