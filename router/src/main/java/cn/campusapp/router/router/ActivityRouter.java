@@ -35,6 +35,8 @@ public class ActivityRouter extends BaseRouter {
     static ActivityRouter mSharedActivityRouter = new ActivityRouter();
     private static String MATCH_SCHEME = "activity";
 
+    public static final String KEY_URL = "key_and_activity_router_url";
+
     static {
         CAN_OPEN_ROUTE = ActivityRoute.class;
     }
@@ -367,6 +369,12 @@ public class ActivityRouter extends BaseRouter {
         intent = setKeyValueInThePath(matchedRoute, route.getUrl(), intent);
         intent = setOptionParams(route.getUrl(), intent);
         intent = setExtras(route.getExtras(), intent);
+        intent.putExtra(KEY_URL, route.getUrl());
         return intent;
+    }
+
+
+    public static String getKeyUrl(){
+        return KEY_URL;
     }
 }

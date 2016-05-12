@@ -114,6 +114,8 @@ public class MainActivity extends Activity {
         activityRoute
                 .setAnimation(this, R.anim.in_from_left, R.anim.out_to_right)
                 .open();
+
+
     }
 
     private void openSecondActivityWithHorizontalAnim(){
