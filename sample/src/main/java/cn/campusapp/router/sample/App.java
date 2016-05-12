@@ -7,7 +7,6 @@ import java.util.Map;
 
 import cn.campusapp.router.Router;
 import cn.campusapp.router.router.IActivityRouteTableInitializer;
-import timber.log.Timber;
 
 /**
  * Created by kris on 16/3/11.
@@ -23,8 +22,9 @@ public class App extends Application {
                 router.put("activity://second/:{name}", SecondActivity.class);
             }
         });
-//        Router.initActivityRouter(this);
+        // Router.initActivityRouter(this);
         Router.initBrowserRouter(getApplicationContext());
-        Timber.plant(new Timber.DebugTree());
+        // to output logs of AndRouter
+        Router.setDebugMode(true);
     }
 }

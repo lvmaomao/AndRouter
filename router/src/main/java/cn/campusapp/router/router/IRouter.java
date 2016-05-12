@@ -1,5 +1,7 @@
 package cn.campusapp.router.router;
 
+import android.content.Context;
+
 import cn.campusapp.router.route.IRoute;
 
 /**
@@ -21,6 +23,9 @@ public interface IRouter {
      * @return true: open success, fail: open fail
      */
     boolean open(String url);
+
+
+    boolean open(Context context, String url);
 
     /**
      * build the route according to the url, if not match, return null

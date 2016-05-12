@@ -151,7 +151,22 @@ public class ActivityRouter extends BaseRouter {
 
     @Override
     public boolean open(String url) {
-        return open(getRoute(url));
+        return open(null, url);
+    }
+
+    @Override
+    public boolean open(Context context, String url) {
+        IRoute route = getRoute(url);
+        if(route instanceof ActivityRoute){
+            ActivityRoute aRoute = (ActivityRoute) route;
+            try {
+                open(aRoute, context);
+                return true;
+            } catch (Exception e){
+                Timber.e(e, "Url route not specified: %s", route.getUrl());
+            }
+        }
+        return false;
     }
 
 

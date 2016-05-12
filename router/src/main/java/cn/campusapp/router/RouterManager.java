@@ -121,6 +121,15 @@ public class RouterManager {
         return null;
     }
 
+    public boolean open(Context context, String url){
+        for(IRouter router : mRouters){
+            if(router.canOpenTheUrl(url)){
+                return router.open(context, url);
+            }
+        }
+        return false;
+    }
+
 
     public boolean openRoute(IRoute route){
         for(IRouter router : mRouters){

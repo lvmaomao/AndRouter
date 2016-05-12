@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
 
 
     private void openSecondActivity(){
-        Router.open("activity://second/汤二狗");
+        Router.open(this, "activity://second/汤二狗");
     }
 
     private void openSecondActivityWithVerticalAnim(){
@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
 
     private void openThirdActivityWithExtraValueUsingAnotherRoute(){
         Date date = new Date();
-        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://third2");
+        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://third2?text=33");
         toasts("" + activityRoute
                 .withParams("date", date)
                 .open());

@@ -7,6 +7,7 @@ import cn.campusapp.router.router.ActivityRouter;
 import cn.campusapp.router.router.BrowserRouter;
 import cn.campusapp.router.router.IActivityRouteTableInitializer;
 import cn.campusapp.router.router.IRouter;
+import timber.log.Timber;
 
 /**
  * Created by kris on 16/3/17.
@@ -38,6 +39,20 @@ public class Router {
 
     public static boolean open(String url){
         return RouterManager.getSingleton().open(url);
+    }
+
+    public static boolean open(Context context, String url){
+        return RouterManager.getSingleton().open(context, url);
+    }
+
+    /**
+     * AndRouter uses Timber to output logs. Timber needs init, so if you don't use Timber and you want to view logs of AndRouter, you may need to
+     * use this method, and set the debug as true
+     */
+    public static void setDebugMode(boolean debug){
+        if(debug) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     /**
