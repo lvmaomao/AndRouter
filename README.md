@@ -256,8 +256,8 @@ Then, in the build.gradle file of your app module, you need to add these depende
 apply plugin: 'android-apt'
 
 dependencies {
-    compile 'com.github.campusappcn.AndRouter:router:1.2.1'
-    apt 'com.github.campusappcn.AndRouter:compiler:1.2.1'
+    compile 'com.github.campusappcn.AndRouter:router:1.2.4'
+    apt 'com.github.campusappcn.AndRouter:compiler:1.2.4'
 }
 ```
 
