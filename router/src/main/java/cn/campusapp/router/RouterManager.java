@@ -2,7 +2,6 @@ package cn.campusapp.router;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import timber.log.Timber;
  * router 应该是个单例
  */
 public class RouterManager {
+
     private static final RouterManager singleton = new RouterManager();
 
     //注意这是个list是有顺序的，所以排在前面的优先级会比较高
@@ -72,24 +72,26 @@ public class RouterManager {
         addRouter(mBrowserRouter);
     }
 
-    public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer){
-        initActivityRouter(context, initializer, null);
-
-    }
 
     public synchronized void initActivityRouter(Context context){
         mActivityRouter.init(context);
         addRouter(mActivityRouter);
     }
 
-    public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer, String scheme){
-        mActivityRouter.init(context, initializer);
-        if(!TextUtils.isEmpty(scheme)) {
-            mActivityRouter.setMatchScheme(scheme);
+    public synchronized void initActivityRouter(Context context, String ... schemes){
+        initActivityRouter(context, null, schemes);
+    }
+
+    public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer, String ... schemes){
+        if(initializer == null) {
+            mActivityRouter.init(context);
+        } else {
+            mActivityRouter.init(context, initializer);
         }
-        if(! mRouters.contains(mActivityRouter)) {
-            addRouter(mActivityRouter);
+        if(schemes != null && schemes.length > 0){
+            mActivityRouter.setMatchSchemes(schemes);
         }
+        addRouter(mActivityRouter);
     }
 
     public List<IRouter> getRouters(){

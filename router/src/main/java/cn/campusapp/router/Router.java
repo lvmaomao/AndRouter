@@ -24,17 +24,30 @@ public class Router {
        RouterManager.getSingleton().initBrowserRouter(context);
     }
 
-    public static synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer){
-        RouterManager.getSingleton().initActivityRouter(context, initializer);
-    }
 
     public static synchronized void initActivityRouter(Context context){
         RouterManager.getSingleton().initActivityRouter(context);
     }
 
 
+    /**
+     * @See
+     * @param context
+     * @param scheme
+     * @param initializer
+     */
+    @Deprecated
     public static synchronized void initActivityRouter(Context context, String scheme, IActivityRouteTableInitializer initializer){
         RouterManager.getSingleton().initActivityRouter(context, initializer, scheme);
+    }
+
+
+    public static synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer, String ... scheme){
+        RouterManager.getSingleton().initActivityRouter(context, initializer, scheme);
+    }
+
+    public static synchronized void initActivityRouter(Context context, String ... scheme){
+        RouterManager.getSingleton().initActivityRouter(context, scheme);
     }
 
     public static boolean open(String url){

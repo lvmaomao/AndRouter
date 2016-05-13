@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
 
     private void openThirdActivityWithExtraValue(){
         Date date = new Date();
-        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://third");
+        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity2://third");
         activityRoute
                 .withParams("date", date)
                 .open();
@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
 
     private void openThirdActivityWithExtraValueUsingAnotherRoute(){
         Date date = new Date();
-        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity://third2?text=33");
+        ActivityRoute activityRoute = (ActivityRoute) Router.getRoute("activity2://third2?text=33");
         toasts("" + activityRoute
                 .withParams("date", date)
                 .open());

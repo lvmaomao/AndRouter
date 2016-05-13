@@ -21,7 +21,7 @@ public class App extends Application {
             public void initRouterTable(Map<String, Class<? extends Activity>> router) {
                 router.put("activity://second/:{name}", SecondActivity.class);
             }
-        });
+        }, "activity", "activity2");
         // Router.initActivityRouter(this);
         Router.initBrowserRouter(getApplicationContext());
         // to output logs of AndRouter

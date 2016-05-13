@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +35,14 @@ import static cn.campusapp.router.utils.UrlUtils.getScheme;
 public class ActivityRouter extends BaseRouter {
     private static final String TAG = "Router";
     static ActivityRouter mSharedActivityRouter = new ActivityRouter();
-    private static String MATCH_SCHEME = "activity";
+    private static List<String> MATCH_SCHEMES = new ArrayList<>();
+    private static final String DEFAULT_SCHEME = "activity";
 
     public static final String KEY_URL = "key_and_activity_router_url";
 
     static {
         CAN_OPEN_ROUTE = ActivityRoute.class;
+        MATCH_SCHEMES.add("activity");
     }
 
     Context mBaseContext;
@@ -68,7 +72,9 @@ public class ActivityRouter extends BaseRouter {
     }
 
     public void initActivityRouterTable(IActivityRouteTableInitializer initializer) {
-        initializer.initRouterTable(mRouteTable);
+        if(initializer != null) {
+            initializer.initRouterTable(mRouteTable);
+        }
         for (String pathRule : mRouteTable.keySet()) {
             boolean isValid = ActivityRouteRuleBuilder.isActivityRuleValid(pathRule);
             if (!isValid) {
@@ -95,15 +101,43 @@ public class ActivityRouter extends BaseRouter {
 
     @Override
     public boolean canOpenTheUrl(String url) {
-        return TextUtils.equals(getScheme(url), MATCH_SCHEME);
+        for(String scheme : MATCH_SCHEMES) {
+            if(TextUtils.equals(scheme, getScheme(url))){
+                return true;
+            }
+        }
+        return false;
     }
 
+    /**
+     * It support multi schemes now
+     * @see #getMatchSchemes()
+     * @return
+     */
+    @Deprecated
     public String getMatchScheme() {
-        return MATCH_SCHEME;
+        return MATCH_SCHEMES.get(0);
+    }
+
+    public List<String> getMatchSchemes(){
+        return MATCH_SCHEMES;
     }
 
     public void setMatchScheme(String scheme) {
-        MATCH_SCHEME = scheme;
+        MATCH_SCHEMES.clear();
+        MATCH_SCHEMES.add(scheme);
+    }
+
+    public void setMatchSchemes(String... schemes){
+        MATCH_SCHEMES.clear();
+        List<String> list = Arrays.asList(schemes);
+        list.remove("");
+        list.remove(null);
+        MATCH_SCHEMES.addAll(list);
+    }
+
+    public void addMatchSchemes(String scheme){
+        MATCH_SCHEMES.add(scheme);
     }
 
     @Override
