@@ -2,9 +2,12 @@ package cn.campusapp.router;
 
 import android.content.Context;
 
+import java.util.Queue;
+
 import cn.campusapp.router.route.IRoute;
 import cn.campusapp.router.router.ActivityRouter;
 import cn.campusapp.router.router.BrowserRouter;
+import cn.campusapp.router.router.HistoryItem;
 import cn.campusapp.router.router.IActivityRouteTableInitializer;
 import cn.campusapp.router.router.IRouter;
 import timber.log.Timber;
@@ -89,5 +92,10 @@ public class Router {
     public static void setBrowserRouter(BrowserRouter router){
         RouterManager.getSingleton().setBrowserRouter(router);
     }
+
+    public static Queue<HistoryItem> getActivityChangedHistories(){
+        return RouterManager.getSingleton().getActivityChangedHistories();
+    }
+
 
 }

@@ -8,9 +8,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.Date;
+import java.util.Queue;
 
 import cn.campusapp.router.Router;
 import cn.campusapp.router.route.ActivityRoute;
+import cn.campusapp.router.router.HistoryItem;
+import timber.log.Timber;
 
 public class MainActivity extends Activity {
 
@@ -104,6 +107,14 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Queue<HistoryItem> historyItems = Router.getActivityChangedHistories();
+        for(HistoryItem item : historyItems){
+            Timber.i("%s %s", item.getFrom().toString(), item.getTo().toString());
+        }
+    }
 
     private void openSecondActivity(){
         Router.open(this, "activity://second/汤二狗");

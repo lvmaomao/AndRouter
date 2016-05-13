@@ -9,11 +9,14 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import cn.campusapp.router.BuildConfig;
 import cn.campusapp.router.exception.InvalidRoutePathException;
@@ -37,16 +40,18 @@ public class ActivityRouter extends BaseRouter {
     static ActivityRouter mSharedActivityRouter = new ActivityRouter();
     private static List<String> MATCH_SCHEMES = new ArrayList<>();
     private static final String DEFAULT_SCHEME = "activity";
+    private static final int HISTORY_CACHE_SIZE = 20;
 
     public static final String KEY_URL = "key_and_activity_router_url";
 
     static {
         CAN_OPEN_ROUTE = ActivityRoute.class;
-        MATCH_SCHEMES.add("activity");
+        MATCH_SCHEMES.add(DEFAULT_SCHEME);
     }
 
     Context mBaseContext;
     Map<String, Class<? extends Activity>> mRouteTable = new HashMap<>();
+    CircularFifoQueue<HistoryItem> mHistoryCaches = new CircularFifoQueue<>(HISTORY_CACHE_SIZE);
 
     public static ActivityRouter getSharedRouter() {
         return mSharedActivityRouter;
@@ -205,11 +210,11 @@ public class ActivityRouter extends BaseRouter {
 
 
     protected void open(ActivityRoute route, Context context) throws RouteNotFoundException {
-        Intent intent = match(route);
+        Class<?> fromClazz = context != null ? context.getClass() : mBaseContext.getClass();
+        Intent intent = match(fromClazz, route);
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
-
         if (context == null) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mBaseContext.startActivity(intent);
@@ -226,7 +231,7 @@ public class ActivityRouter extends BaseRouter {
     protected void openForResult(ActivityRoute route, Activity activity, int requestCode) throws RouteNotFoundException {
 
 
-        Intent intent = match(route);
+        Intent intent = match(activity.getClass(), route);
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
@@ -239,7 +244,7 @@ public class ActivityRouter extends BaseRouter {
 
     protected void openForResult(ActivityRoute route, Fragment fragment, int requestCode) throws RouteNotFoundException {
 
-        Intent intent = match(route);
+        Intent intent = match(fragment.getClass(), route);
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
@@ -252,7 +257,7 @@ public class ActivityRouter extends BaseRouter {
 
     protected void openForResult(ActivityRoute route, android.app.Fragment fragment, int requestCode) throws RouteNotFoundException {
 
-        Intent intent = match(route);
+        Intent intent = match(fragment.getClass(), route);
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
@@ -407,13 +412,14 @@ public class ActivityRouter extends BaseRouter {
     }
 
     @Nullable
-    private Intent match(ActivityRoute route) {
+    private Intent match(Class<?> from, ActivityRoute route) {
         String matchedRoute = findMatchedRoute(route);
         if (matchedRoute == null) {
             return null;
         }
         Class<? extends Activity> matchedActivity = mRouteTable.get(matchedRoute);
         Intent intent = new Intent(mBaseContext, matchedActivity);
+        mHistoryCaches.add(new HistoryItem(from, matchedActivity));
         //find the key value in the path
         intent = setKeyValueInThePath(matchedRoute, route.getUrl(), intent);
         intent = setOptionParams(route.getUrl(), intent);
@@ -426,4 +432,9 @@ public class ActivityRouter extends BaseRouter {
     public static String getKeyUrl(){
         return KEY_URL;
     }
+
+    public Queue<HistoryItem> getRouteHistories(){
+        return mHistoryCaches;
+    }
+    
 }

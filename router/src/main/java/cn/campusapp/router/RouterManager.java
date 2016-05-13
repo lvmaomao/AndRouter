@@ -7,10 +7,12 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import cn.campusapp.router.route.IRoute;
 import cn.campusapp.router.router.ActivityRouter;
 import cn.campusapp.router.router.BrowserRouter;
+import cn.campusapp.router.router.HistoryItem;
 import cn.campusapp.router.router.IActivityRouteTableInitializer;
 import cn.campusapp.router.router.IRouter;
 import timber.log.Timber;
@@ -156,6 +158,17 @@ public class RouterManager {
         addRouter(router);
     }
 
+
+    public Queue<HistoryItem> getActivityChangedHistories(){
+        ActivityRouter aRouter = null;
+        for(IRouter router : mRouters){
+            if(router instanceof ActivityRouter){
+                aRouter = (ActivityRouter) router;
+                break;
+            }
+        }
+        return aRouter != null ? aRouter.getRouteHistories() : null;
+    }
 
 
 }
