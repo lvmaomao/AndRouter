@@ -11,6 +11,7 @@ import android.util.Log;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,26 +38,36 @@ import static cn.campusapp.router.utils.UrlUtils.getScheme;
  */
 public class ActivityRouter extends BaseRouter {
     private static final String TAG = "Router";
-    static ActivityRouter mSharedActivityRouter = new ActivityRouter();
     private static List<String> MATCH_SCHEMES = new ArrayList<>();
     private static final String DEFAULT_SCHEME = "activity";
     private static final int HISTORY_CACHE_SIZE = 20;
+
+    static ActivityRouter mActivityRouter = new ActivityRouter();   //Activity
 
     public static final String KEY_URL = "key_and_activity_router_url";
 
     static {
         CAN_OPEN_ROUTE = ActivityRoute.class;
         MATCH_SCHEMES.add(DEFAULT_SCHEME);
+
+        try {
+            Constructor<?> constructor =  Class.forName("cn.campusapp.router.router.AnnotatedRouterTableInitializer").getConstructor();
+            IActivityRouteTableInitializer initializer = (IActivityRouteTableInitializer) constructor.newInstance();
+            mActivityRouter.initActivityRouterTable(initializer);
+
+        } catch (Exception e) {
+            //do nothing
+        }
     }
 
     Context mBaseContext;
     Map<String, Class<? extends Activity>> mRouteTable = new HashMap<>();
     CircularFifoQueue<HistoryItem> mHistoryCaches = new CircularFifoQueue<>(HISTORY_CACHE_SIZE);
 
-    public static ActivityRouter getSharedRouter() {
-        return mSharedActivityRouter;
-    }
 
+    public static ActivityRouter getInstance(){
+        return mActivityRouter;
+    }
 
     public void init(Context appContext, IActivityRouteTableInitializer initializer) {
         mBaseContext = appContext;
@@ -91,7 +102,7 @@ public class ActivityRouter extends BaseRouter {
 
 
     @Override
-    public IRoute getRoute(String url) {
+    public ActivityRoute getRoute(String url) {
         return new ActivityRoute.Builder(this)
                 .setUrl(url)
                 .build();
@@ -216,9 +227,10 @@ public class ActivityRouter extends BaseRouter {
             throw new RouteNotFoundException(route.getUrl());
         }
         if (context == null) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | route.getFlags());
             mBaseContext.startActivity(intent);
         } else {
+            intent.setFlags(route.getFlags());
             context.startActivity(intent);
         }
 
@@ -235,6 +247,7 @@ public class ActivityRouter extends BaseRouter {
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
+        intent.setFlags(route.getFlags());
         if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
             route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
         }
@@ -248,6 +261,7 @@ public class ActivityRouter extends BaseRouter {
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
+        intent.setFlags(route.getFlags());
         if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
             route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
         }
@@ -261,6 +275,7 @@ public class ActivityRouter extends BaseRouter {
         if (intent == null) {
             throw new RouteNotFoundException(route.getUrl());
         }
+        intent.setFlags(route.getFlags());
         if (route.getInAnimation() != -1 && route.getOutAnimation() != -1 && route.getActivity() != null) {
             route.getActivity().overridePendingTransition(route.getInAnimation(), route.getOutAnimation());
         }
@@ -436,5 +451,5 @@ public class ActivityRouter extends BaseRouter {
     public Queue<HistoryItem> getRouteHistories(){
         return mHistoryCaches;
     }
-    
+
 }

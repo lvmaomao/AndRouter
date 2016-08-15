@@ -3,7 +3,6 @@ package cn.campusapp.router;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,21 +27,6 @@ public class RouterManager {
 
     //注意这是个list是有顺序的，所以排在前面的优先级会比较高
     static List<IRouter> mRouters = new LinkedList<>();
-    static ActivityRouter mActivityRouter = new ActivityRouter();   //Activity
-    static BrowserRouter mBrowserRouter = new BrowserRouter();  //浏览器
-
-
-    static {
-        try {
-            Constructor<?> constructor =  Class.forName("cn.campusapp.router.router.AnnotatedRouterTableInitializer").getConstructor();
-            IActivityRouteTableInitializer initializer = (IActivityRouteTableInitializer) constructor.newInstance();
-            mActivityRouter.initActivityRouterTable(initializer);
-
-        } catch (Exception e) {
-            //do nothing
-        }
-    }
-
 
     private RouterManager(){}
 
@@ -70,14 +54,16 @@ public class RouterManager {
     }
 
     public synchronized void initBrowserRouter(Context context){
-        mBrowserRouter.init(context);
-        addRouter(mBrowserRouter);
+        BrowserRouter browserRouter = BrowserRouter.getInstance();
+        browserRouter.init(context);
+        addRouter(browserRouter);
     }
 
 
     public synchronized void initActivityRouter(Context context){
-        mActivityRouter.init(context);
-        addRouter(mActivityRouter);
+        ActivityRouter activityRouter = ActivityRouter.getInstance();
+        activityRouter.init(context);
+        addRouter(activityRouter);
     }
 
     public synchronized void initActivityRouter(Context context, String ... schemes){
@@ -85,15 +71,16 @@ public class RouterManager {
     }
 
     public synchronized void initActivityRouter(Context context, IActivityRouteTableInitializer initializer, String ... schemes){
+        ActivityRouter router = ActivityRouter.getInstance();
         if(initializer == null) {
-            mActivityRouter.init(context);
+            router.init(context);
         } else {
-            mActivityRouter.init(context, initializer);
+            router.init(context, initializer);
         }
         if(schemes != null && schemes.length > 0){
-            mActivityRouter.setMatchSchemes(schemes);
+            router.setMatchSchemes(schemes);
         }
-        addRouter(mActivityRouter);
+        addRouter(router);
     }
 
     public List<IRouter> getRouters(){

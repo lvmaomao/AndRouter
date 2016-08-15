@@ -11,10 +11,11 @@ import java.util.Date;
 import java.util.Queue;
 
 import cn.campusapp.router.Router;
+import cn.campusapp.router.annotation.RouterMap;
 import cn.campusapp.router.route.ActivityRoute;
 import cn.campusapp.router.router.HistoryItem;
 import timber.log.Timber;
-
+@RouterMap("activity://main")
 public class MainActivity extends Activity {
 
 
@@ -53,7 +54,7 @@ public class MainActivity extends Activity {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSecondActivity();
+                    openSecondActivity();
             }
         });
 

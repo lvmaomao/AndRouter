@@ -27,6 +27,7 @@ public class ActivityRoute extends BaseRoute {
     private WeakReference<Fragment> mSupportFRef; //if you want to use fragment.startActivityForResutl
     private int mRequestCode = 0;  // request code to start activity for result
     private WeakReference<android.app.Fragment> mFRef; //if you want to use android.app.fragment to startActivityForResult, you should set this
+    private int mFlags = 0;
 
     private ActivityRoute(IRouter router, String url){
         super(router, url);
@@ -88,6 +89,10 @@ public class ActivityRoute extends BaseRoute {
         mInAnimation = inAnimation;
         mOutAnimation = outAnimation;
         return this;
+    }
+
+    public int getFlags(){
+        return mFlags;
     }
 
 
@@ -166,6 +171,11 @@ public class ActivityRoute extends BaseRoute {
         return this;
     }
 
+    public ActivityRoute withFlags(int flags){
+        mFlags = flags;
+        return this;
+    }
+
 
     public static class Builder{
         String mUrl;
@@ -178,6 +188,7 @@ public class ActivityRoute extends BaseRoute {
         private Fragment mSupportFra; //if you want to use fragment.startActivityForResutl
         private int mRequestCode = 0;  // request code to start activity for result
         private android.app.Fragment mFra; //if you want to use android.app.fragment to startActivityForResult, you should set this
+        int mFlags = 0;
 
 
         public Builder(IRouter router){
@@ -260,6 +271,11 @@ public class ActivityRoute extends BaseRoute {
             return this;
         }
 
+        public Builder withFlags(int flags){
+            mFlags = flags;
+            return this;
+        }
+
         /**
          *
          * @param extra
@@ -302,6 +318,7 @@ public class ActivityRoute extends BaseRoute {
                     route.withOpenMethodStartForResult(mFra, mRequestCode);
             }
             route.setExtras(mBundle);
+            route.withFlags(mFlags);
             return route;
         }
     }

@@ -20,9 +20,16 @@ public class BrowserRouter extends BaseRouter {
 
     private Context mBaseContext;
 
+    static BrowserRouter mBrowserRouter = new BrowserRouter();  //浏览器
+
+
     static {
         SCHEMES_CAN_OPEN.add("https");
         SCHEMES_CAN_OPEN.add("http");
+    }
+
+    public static BrowserRouter getInstance(){
+        return mBrowserRouter;
     }
 
     public void init(Context context){
@@ -55,7 +62,7 @@ public class BrowserRouter extends BaseRouter {
     }
 
     @Override
-    public IRoute getRoute(String url) {
+    public BrowserRoute getRoute(String url) {
         return new BrowserRoute.Builder(this)
                 .setUrl(url)
                 .build();
