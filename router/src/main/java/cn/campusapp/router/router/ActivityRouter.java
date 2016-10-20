@@ -3,6 +3,7 @@ package cn.campusapp.router.router;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -440,6 +441,13 @@ public class ActivityRouter extends BaseRouter {
         intent = setOptionParams(route.getUrl(), intent);
         intent = setExtras(route.getExtras(), intent);
         intent.putExtra(KEY_URL, route.getUrl());
+        if(route.getUrl()!=null){
+            try {
+                intent.setData(Uri.parse(route.getUrl()));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         return intent;
     }
 
